@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma/prisma";
 import jwt from "jsonwebtoken"
 import { compare } from "bcryptjs"
 import { cookies as NextCookies } from "next/headers"
+import { redirect } from "next/navigation";
 
 export const signInAction = async (props: TFormSchema): Promise<TSignInActionReturn> => {
     const body = signInActionSchema.parse(props)
@@ -26,7 +27,7 @@ export const signInAction = async (props: TFormSchema): Promise<TSignInActionRet
     const jwtToken = jwt.sign(
         {
             maxAge: 60 * 60 * 24 * 30,
-            user: { email: hasUser.email, id: hasUser.id, role: null },
+            user: { email: hasUser.email, id: hasUser.id, role: hasUser.role },
         },
         process.env.JWT_KEY!
     )
@@ -39,11 +40,7 @@ export const signInAction = async (props: TFormSchema): Promise<TSignInActionRet
         maxAge: 60 * 60 * 24 * 30,
     });
 
-    return {
-        statusCode: 200,
-        status: "success",
-        title: "Login realizado com sucesso",
-    }
+    redirect("/admin")
 }
 
 const error: TSignInActionReturn = {
