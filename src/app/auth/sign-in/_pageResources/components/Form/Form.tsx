@@ -5,8 +5,11 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { signInAction } from "../../actions/signInAction";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
-const signInFormSchema = z.object({
+export const signInFormSchema = z.object({
   email: z
     .string({ required_error: "Digite seu email" })
     .email("Email inválido"),
@@ -15,17 +18,24 @@ const signInFormSchema = z.object({
     .min(8, { message: "A senha deve ter pelo menos 8 caracteres" }),
 });
 
-type TFormSchema = z.infer<typeof signInFormSchema>;
+export type TFormSchema = z.infer<typeof signInFormSchema>;
 
 export const Form = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isLoading },
   } = useForm<TFormSchema>({ resolver: zodResolver(signInFormSchema) });
 
-  const onSubmit = (data: TFormSchema) => {
+  const onSubmit = async (data: TFormSchema) => {
     console.log(data);
+
+    const signInActionResponse = await signInAction(data);
+
+    toast(signInActionResponse.title, {
+      description: signInActionResponse.message,
+      duration: 5000,
+    });
   };
 
   return (
@@ -36,7 +46,7 @@ export const Form = () => {
       <div className="flex flex-col gap-1">
         <Input placeholder="Email" type="email" {...register("email")} />
         {errors.email && (
-          <span className="text-red-700 text-sm">{errors.email.message}</span>
+          <span className="text-red-300 text-sm">{errors.email.message}</span>
         )}
       </div>
       <div className="flex flex-col gap-1">
@@ -46,12 +56,15 @@ export const Form = () => {
           {...register("password")}
         />
         {errors.password && (
-          <span className="text-red-700 text-sm">
+          <span className="text-red-300 text-sm">
             {errors.password.message}
           </span>
         )}
       </div>
-      <Button type="submit">Sign In</Button>
+      <Button type="submit" disabled={isLoading}>
+        Sign In
+      </Button>
+      <Toaster />
     </form>
   );
 };
