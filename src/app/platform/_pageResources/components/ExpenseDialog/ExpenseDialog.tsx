@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ExpenseForm } from "./ExpenseForm";
 
 export const ExpenseDialog = () => {
   return (
@@ -18,11 +19,12 @@ export const ExpenseDialog = () => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Register a new expense</DialogTitle>
+          <DialogDescription>
+            Add a new fixed, variable or other expense.
+          </DialogDescription>
         </DialogHeader>
 
-        <DialogDescription>
-          Add a new fixed, variable or other expense.
-        </DialogDescription>
+        <ExpenseForm />
       </DialogContent>
     </Dialog>
   );

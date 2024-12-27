@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 
 import { User } from "@prisma/client";
-import { ExpenseDialogWrapper } from "../ExpenseDialogWrapper";
+import { ExpenseDialog } from "../ExpenseDialog/ExpenseDialog";
 
 export const Welcome = ({ user }: TWelcomeProps) => {
   return (
@@ -21,7 +21,7 @@ export const Welcome = ({ user }: TWelcomeProps) => {
             Manage all expenses, add, edit and remove.
           </CardDescription>
 
-          <ExpenseDialogWrapper />
+          <ExpenseDialog />
         </CardHeader>
       </Card>
 
