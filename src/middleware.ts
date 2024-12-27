@@ -1,28 +1,17 @@
-import { jwtVerify } from "jose";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { getUserSession, handleAuthenticateError } from "./lib/authenticate/lib";
 
 export default async function middleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname
 
-    const handleError = () => {
-        const res = NextResponse.redirect(new URL(`/auth/sign-in`, req.url));
-        res.cookies.delete("session");
-        return res;
-      };
-
     /* AUTHORIZE USER */
-    if (pathname.includes("/admin")) {
-        const userToken = req?.cookies.get("session");
+    if (pathname.includes("/admin" || "/platform")) {
+        const user = await getUserSession(req);
   
-        if (!userToken?.value) return handleError();
-  
-        const user: any = await (await jwtVerify(userToken?.value, new TextEncoder().encode(process.env.JWT_KEY!))).payload?.user;
-  
-        if (!user) return handleError();
+        /* CHECK IF USER IS AUTHENTICATED */
+        if (!user) return handleAuthenticateError(req);
 
-        console.log(user)
-  
         /* CHECK IF USER IS ADMIN */
-        if (pathname.includes("/admin") && user?.role !== "admin") return handleError();
+        if (pathname.includes("/admin") && user?.role !== "admin") return handleAuthenticateError(req);
       }
 }

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { TFormSchema } from "../components/Form/Form"
 import { prisma } from "@/lib/prisma/prisma";
 import jwt from "jsonwebtoken"
-import { compare } from "bcryptjs"
+import { compare, hash } from "bcryptjs"
 import { cookies as NextCookies } from "next/headers"
 import { redirect } from "next/navigation";
 

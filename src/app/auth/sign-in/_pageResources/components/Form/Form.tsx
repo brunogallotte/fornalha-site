@@ -9,17 +9,6 @@ import { signInAction } from "../../actions/signInAction";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
-export const signInFormSchema = z.object({
-  email: z
-    .string({ required_error: "Digite seu email" })
-    .email("Email inválido"),
-  password: z
-    .string({ required_error: "Digite sua senha" })
-    .min(8, { message: "A senha deve ter pelo menos 8 caracteres" }),
-});
-
-export type TFormSchema = z.infer<typeof signInFormSchema>;
-
 export const Form = () => {
   const {
     register,
@@ -28,8 +17,6 @@ export const Form = () => {
   } = useForm<TFormSchema>({ resolver: zodResolver(signInFormSchema) });
 
   const onSubmit = async (data: TFormSchema) => {
-    console.log(data);
-
     const signInActionResponse = await signInAction(data);
 
     toast(signInActionResponse.title, {
@@ -68,3 +55,14 @@ export const Form = () => {
     </form>
   );
 };
+
+export const signInFormSchema = z.object({
+  email: z
+    .string({ required_error: "Digite seu email" })
+    .email("Email inválido"),
+  password: z
+    .string({ required_error: "Digite sua senha" })
+    .min(8, { message: "A senha deve ter pelo menos 8 caracteres" }),
+});
+
+export type TFormSchema = z.infer<typeof signInFormSchema>;
