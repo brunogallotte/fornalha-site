@@ -8,26 +8,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export const CategoriesDialog = () => {
+export const ExpenseDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary">Atualizar cateogrias</Button>
+        <Button variant="destructive">Add new expense</Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Atualizar categorias</DialogTitle>
+          <DialogTitle>Register a new expense</DialogTitle>
         </DialogHeader>
 
         <DialogDescription>
-          Atualize as categorias do sistema, adicione, edite e remova.
+          Add a new fixed, variable or other expense.
         </DialogDescription>
-
-        
       </DialogContent>
     </Dialog>
   );
 };
-
-

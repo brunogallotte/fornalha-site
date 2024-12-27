@@ -1,7 +1,7 @@
 import { ContentWrapper } from "@/components/ContentWrapper";
 import { getUserSessionFromCookies } from "@/lib/authenticate/lib";
 import { Chart } from "./_pageResources/sections/Chart/Chart";
-import { Welcome } from "./_pageResources/components/Welcome";
+import { Welcome } from "./_pageResources/components/Welcome/Welcome";
 
 export default async function Admin() {
   const user = await getUserSessionFromCookies();

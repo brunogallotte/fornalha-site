@@ -4,7 +4,7 @@ import { z } from "zod";
 import { TFormSchema } from "../components/Form/Form"
 import { prisma } from "@/lib/prisma/prisma";
 import jwt from "jsonwebtoken"
-import { compare, hash } from "bcryptjs"
+import { compare } from "bcryptjs"
 import { cookies as NextCookies } from "next/headers"
 import { redirect } from "next/navigation";
 
@@ -27,7 +27,7 @@ export const signInAction = async (props: TFormSchema): Promise<TSignInActionRet
     const jwtToken = jwt.sign(
         {
             maxAge: 60 * 60 * 24 * 30,
-            user: { email: hasUser.email, id: hasUser.id, role: hasUser.role },
+            user: { email: hasUser.email, name: hasUser.name, id: hasUser.id, role: hasUser.role },
         },
         process.env.JWT_KEY!
     )
@@ -40,7 +40,7 @@ export const signInAction = async (props: TFormSchema): Promise<TSignInActionRet
         maxAge: 60 * 60 * 24 * 30,
     });
 
-    redirect("/admin")
+    redirect(hasUser.role === "admin" ? "/admin" : "/platform")
 }
 
 const error: TSignInActionReturn = {
