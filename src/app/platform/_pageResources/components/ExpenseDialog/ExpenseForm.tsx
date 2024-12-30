@@ -2,6 +2,8 @@
 
 import { DatePicker } from "@/components/DatePicker/DatePicker";
 import { useDatePicker } from "@/components/DatePicker/useDatePicker";
+import { TextArea } from "@/components/TextArea/TextArea";
+import { TextInput } from "@/components/TextInput/TextInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -39,19 +40,13 @@ export const ExpenseForm = () => {
     <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
-          <div className="flex flex-col gap-1 w-full max-w-[50%]">
-            <Input
-              id="title"
-              placeholder="Title"
-              type="text"
-              {...register("title")}
-            />
-            {errors.title && (
-              <span className="text-red-300 text-sm">
-                {errors.title.message}
-              </span>
-            )}
-          </div>
+          <TextInput
+            id="title"
+            placeholder="Title"
+            type="text"
+            error={errors.title?.message}
+            {...register("title")}
+          />
           <Select onValueChange={(value) => setValue("paymentMethod", value)}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a method" />
@@ -71,18 +66,12 @@ export const ExpenseForm = () => {
           </Select>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <Textarea
-            id="description"
-            placeholder="Description (optional)"
-            {...register("description")}
-          />
-          {errors.description && (
-            <span className="text-red-300 text-sm">
-              {errors.description.message}
-            </span>
-          )}
-        </div>
+        <TextArea
+          id="description"
+          placeholder="Description (optional)"
+          error={errors.description?.message}
+          {...register("description")}
+        />
 
         <Separator className="my-4" />
 
