@@ -2,27 +2,21 @@
 
 import { DatePicker } from "@/components/DatePicker/DatePicker";
 import { useDatePicker } from "@/components/DatePicker/useDatePicker";
+import { SelectFull } from "@/components/SelectFull/SelectFull";
 import { TextArea } from "@/components/TextArea/TextArea";
 import { TextInput } from "@/components/TextInput/TextInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { registerNewExpense } from "../../actions/registerNewExpense";
+import { toast } from "sonner";
 
-export const ExpenseForm = () => {
+export const ExpenseForm = ({ handleDialogClose }: TExpenseFormProps) => {
   const {
     register,
     handleSubmit,
@@ -32,8 +26,15 @@ export const ExpenseForm = () => {
 
   const datePickerStates = useDatePicker();
 
-  const onSubmit = (data: TExpenseFormSchema) => {
-    console.log(data);
+  const onSubmit = async (data: TExpenseFormSchema) => {
+    const registerNewExpenseResponse = await registerNewExpense(data);
+
+    handleDialogClose();
+
+    toast(registerNewExpenseResponse.title, {
+      description: registerNewExpenseResponse.message,
+      duration: 5000,
+    });
   };
 
   return (
@@ -47,23 +48,19 @@ export const ExpenseForm = () => {
             error={errors.title?.message}
             {...register("title")}
           />
-          <Select onValueChange={(value) => setValue("paymentMethod", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a method" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Expense method</SelectLabel>
-                <SelectItem value="credit-card">Credit Card</SelectItem>
-                <SelectItem value="cash">Cash</SelectItem>
-                <SelectItem value="pix">Pix</SelectItem>
-                <SelectItem value="bank-account">
-                  Bank Account Transfer
-                </SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <SelectFull
+            name="paymentMethod"
+            label="Expense method"
+            placeholder="Select a method"
+            options={[
+              { label: "Credit Card", value: "credit-card" },
+              { label: "Cash", value: "cash" },
+              { label: "Pix", value: "pix" },
+              { label: "Bank Account Transfer", value: "bank-account" },
+              { label: "Other", value: "other" },
+            ]}
+            onValueChange={setValue}
+          />
         </div>
 
         <TextArea
@@ -97,22 +94,20 @@ export const ExpenseForm = () => {
           />
         </div>
 
-        <Select onValueChange={(value) => setValue("category", value)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a category of expense" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Expense category</SelectLabel>
-              <SelectItem value="food">Food</SelectItem>
-              <SelectItem value="transport">Transport</SelectItem>
-              <SelectItem value="health">Health</SelectItem>
-              <SelectItem value="education">Education</SelectItem>
-              <SelectItem value="entertainment">Entertainment</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <SelectFull
+          name="category"
+          label="Expense category"
+          placeholder="Select a category of expense"
+          options={[
+            { label: "Food", value: "food" },
+            { label: "Transport", value: "transport" },
+            { label: "Health", value: "health" },
+            { label: "Education", value: "education" },
+            { label: "Entertainment", value: "entertainment" },
+            { label: "Other", value: "other" },
+          ]}
+          onValueChange={setValue}
+        />
 
         <RadioGroup
           onValueChange={(value) => setValue("recurrence", value)}
@@ -142,6 +137,10 @@ export const ExpenseForm = () => {
   );
 };
 
+type TExpenseFormProps = {
+  handleDialogClose: () => void;
+};
+
 const expenseFormSchema = z.object({
   title: z
     .string({ required_error: "Title is required" })
@@ -154,4 +153,4 @@ const expenseFormSchema = z.object({
   category: z.string({ required_error: "Category is required" }),
 });
 
-type TExpenseFormSchema = z.infer<typeof expenseFormSchema>;
+export type TExpenseFormSchema = z.infer<typeof expenseFormSchema>;

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,10 +10,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ExpenseForm } from "./ExpenseForm";
+import { Toaster } from "@/components/ui/sonner";
+import { useState } from "react";
 
 export const ExpenseDialog = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleDialogClose = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="destructive">Add new expense</Button>
       </DialogTrigger>
@@ -24,8 +34,9 @@ export const ExpenseDialog = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <ExpenseForm />
+        <ExpenseForm handleDialogClose={handleDialogClose} />
       </DialogContent>
+      <Toaster />
     </Dialog>
   );
 };
